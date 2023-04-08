@@ -1,34 +1,72 @@
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import java.lang.Number;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 /**
  * 
  * CSCU9T4 Java strings and files exercise.
  *
  */
+
 public class FilesInOut {
-
     public static void main(String[] args) {
-        // Replace this with statements to set the file name (input) and file name (output).
-        // Initially it will be easier to hardcode suitable file names.
+        
+        // determines the input and output of FilesInOut
+        File inputFile = new File("C:\\Users\\Shania\\Downloads\\CSCU9T4Prac2-main\\CSCU9T4Prac2-main\\input.txt");
+        File outputFile = new File("output.txt");
 
-        // Set up a new Scanner to read the input file.
-        // Processing line by line would be sensible here.
-        // Initially, echo the text to System.out to check you are reading correctly.
-        // Then add code to modify the text to the output format.
+        try {
+            
+            // creates a scanner to read the input file, and a "PrintWriter" to write to the output file
+            Scanner scanner = new Scanner(inputFile);
+            PrintWriter writer = new PrintWriter(outputFile);
 
-        // Set up a new PrintWriter to write the output file.
-        // Add suitable code into the above processing (because you need to do this line by line also.
-        // That is, read a line, write a line, loop.
+            // formats the name and date for each line in the input file, then it writes the results to the output file.
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] words = line.split(" ");
+                StringBuilder formattedName = new StringBuilder();
+                String formattedDate = "";
 
-        // Finally, add code to read the filenames as arguments from the command line.
+                // removes any digits from the name and capitalizes the initial letter for each of the word
+                for (int i = 0; i < words.length; i++) {
+                    String word = words[i];
 
-        System.out.println("You need to add your own code to do anything");
+                    if (i ==0) {
+                        String formattedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                        formattedName.append(formattedWord);
+                    } else if (i ==1 && word.length() == 2) {
+                        formattedName.append(". ").append(word.toUpperCase());
+                    } else if (i == words.length -1) {
+                        String formattedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                        formattedName.append(" ").append(formattedWord.replaceAll("[0-9]", ""));
+                    } else {
+                        String formattedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                        formattedName.append(" ").append(formattedWord.replaceAll("[0-9]", ""));
+                    }
+                }
 
-    } // main
+                // rearranges the day, month, year in the format "dd/mm/yyyy" to format the date
+                int dateIndex = line.lastIndexOf(" ");
+                String dateString = line.substring(dateIndex + 1);
+                String day = dateString.substring(0, 2);
+                String month = dateString.substring(2, 4);
+                String year = dateString.substring(4);
+                formattedDate = day + "/" + month + "/" + year;
 
-} // FilesInOut
+                // writes formatted output to file
+                writer.println(formattedName.toString() + " " + formattedDate);
+            }
+
+            // closes the scanner and PrintWriter
+            scanner.close();
+            writer.close();
+            
+        } catch (FileNotFoundException e) {
+            
+            // handles if the input and output file cant be found
+            e.printStackTrace();
+        }
+    }
+}
